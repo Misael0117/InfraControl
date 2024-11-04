@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -54,7 +53,7 @@ if(isset($_POST['but_submit'])){
     $password = $_POST['txt_pwd'];
     if($username != "" && $password != ""){
         // Preparar la consulta con los parámetros
-        $stmt = $conn->prepare("SELECT id, nombre, password FROM usuarios WHERE username = :username AND password = :password AND estado = 1");
+        $stmt = $conn->prepare("SELECT id, username, password FROM usuarios WHERE username = :username AND password = :password AND estado = 1");
         
         // Vincular los parámetros con los valores del formulario
         $stmt->bindParam(':username', $username);
@@ -66,7 +65,7 @@ if(isset($_POST['but_submit'])){
             $record = $stmt->fetch(PDO::FETCH_ASSOC);
             if($record){
                 // Iniciar sesión si los datos son correctos
-                $_SESSION['usuario'] = $record['id'];
+                $_SESSION['usuario'] = $record['username'];
                 echo "<script>
                     Swal.fire({
                         title: 'Usuario validado',
@@ -77,6 +76,8 @@ if(isset($_POST['but_submit'])){
                     });
                 </script>";
             } else {
+
+                // negar acceso si los datos son incorrectos
                 echo "<script>
                     Swal.fire({
                         title: 'Error',
