@@ -28,6 +28,7 @@ include 'user_info.php';
             <button onclick="showContent('saldos')" class="btn btn-info">Ver Saldos</button>
             <button onclick="showContent('entradas')" class="btn btn-success">Ver Entradas</button>
             <button onclick="showContent('salidas')" class="btn btn-danger">Ver Salidas</button>
+            <button onclick="showContent('movimientos')" class="btn btn-warning">Ver Movimientos</button>
         </div>
 
         <!-- Área de contenido dinámico -->
@@ -47,6 +48,9 @@ include 'user_info.php';
                 contentArea.innerHTML = "<h4>Entradas</h4><p>Aquí se mostrarán las entradas...</p>";
             } else if (type === "salidas") {
                 contentArea.innerHTML = "<h4>Salidas</h4><p>Aquí se mostrarán las salidas...</p>";
+            }
+            else if (type === "movimientos") {
+                contentArea.innerHTML = "<h4>Movimientos</h4><p>Aquí se mostrarán los movimientos...</p>";                
             }
         }
     </script>
