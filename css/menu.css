@@ -1,0 +1,34 @@
+ /* Estilos para el menú lateral */
+ 
+ #sidebarMenu {
+    transition: transform 0.3s ease;
+    transform: translateX(-250px);
+    width: 250px;
+    background-color: #f8f9fa;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1000;
+}
+#sidebarMenu.show {
+    transform: translateX(0);
+}
+
+
+/* Ajuste para dispotivos moviles  */
+main {
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+}
+
+
+/* Ajuste navegador */
+@media (min-width: 768px) {
+    #sidebarMenu {
+        transform: translateX(0);
+    }
+    main {
+        margin-left: 250px;
+    }
+}
