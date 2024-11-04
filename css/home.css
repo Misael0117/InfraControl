@@ -1,0 +1,44 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f7f9fb;
+}
+/* Estilo para el saludo de bienvenida */
+.welcome-message {
+    text-align: center;
+    margin-top: 20px;
+}
+/* Estilo para el panel de opciones en el centro */
+.options-container {
+    display: flex;
+    gap: 30px;
+    margin-top: 40px;
+}
+.option {
+    width: 200px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 10px;
+    background-color: #e0e7ff;
+    transition: background-color 0.3s;
+}
+.option:hover {
+    background-color: #c7d2fe;
+}
+.user-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.user-info a {
+    color: #000;
+    font-size: 14px;
+    text-decoration: none;
+}
