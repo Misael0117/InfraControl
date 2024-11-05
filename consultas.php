@@ -15,6 +15,10 @@ include 'user_info.php';
     <title>InfraControl | Consultas</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/consultas.css" rel="stylesheet">
+    <!-- Incluir jQuery --> 
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <!-- Incluir SweetAlert2 --> 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
@@ -38,21 +42,34 @@ include 'user_info.php';
     </div>
 
     <script>
-        // Función para cargar el contenido dinámico según el botón seleccionado
-        function showContent(type) {
-            const contentArea = document.getElementById("content-area");
+    function showContent(type) {
+        const contentArea = document.getElementById("content-area");
 
-            if (type === "saldos") {
-                contentArea.innerHTML = "<h4>Saldos</h4><p>Aquí se mostrarán los saldos...</p>";
-            } else if (type === "entradas") {
-                contentArea.innerHTML = "<h4>Entradas</h4><p>Aquí se mostrarán las entradas...</p>";
-            } else if (type === "salidas") {
-                contentArea.innerHTML = "<h4>Salidas</h4><p>Aquí se mostrarán las salidas...</p>";
-            }
-            else if (type === "movimientos") {
-                contentArea.innerHTML = "<h4>Movimientos</h4><p>Aquí se mostrarán los movimientos...</p>";                
-            }
+        let url = "";
+        if (type === "saldos") {
+            url = "get_saldos.php"; 
+        } else if (type === "entradas") {
+            url = "get_entradas.php"; 
+        } else if (type === "salidas") {
+            url = "get_salidas.php"; 
+        } else if (type === "movimientos") {
+            url = "get_movimientos.php"; 
         }
-    </script>
+
+        if (url) {
+            $.ajax({
+                url: url,
+                method: "GET",
+                success: function(response) {
+                    contentArea.innerHTML = response;
+                },
+                error: function() {
+                    contentArea.innerHTML = "<p>Error al cargar los datos.</p>";
+                }
+            });
+        }
+    }
+</script>
+
 </body>
 </html>
