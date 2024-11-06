@@ -1,5 +1,1 @@
-Se realizo un index y un home basico
-Sin funcionalidad
-Se realizo la conexion de la BD 
-
-Se hizo la validacion de usuarios al inicio de sesión
+Sistema de Inventario InfraControl, para manejo y control de movimientos entrdas y salidas de los materiales
