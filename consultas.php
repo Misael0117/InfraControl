@@ -69,6 +69,96 @@ include 'user_info.php';
             });
         }
     }
+
+    function showContent(type) {
+            $.ajax({
+                url: `get_${type}.php`,
+                method: "GET",
+                success: function(response) {
+                    $("#content-area").html(response);
+                },
+                error: function() {
+                    $("#content-area").html("<p>Error al cargar los datos.</p>");
+                }
+            });
+        }
+
+        function addEntry() {
+            Swal.fire({
+                title: 'Añadir Nueva Entrada',
+                html: '<input id="input1" class="swal2-input" placeholder="Campo 1">' + 
+                      '<input id="input2" class="swal2-input" placeholder="Campo 2">',
+                showCancelButton: true,
+                confirmButtonText: 'Añadir',
+                preConfirm: () => {
+                    const input1 = $('#input1').val();
+                    const input2 = $('#input2').val();
+                    if (!input1 || !input2) {
+                        Swal.showValidationMessage('Por favor llena ambos campos');
+                    }
+                    return { input1, input2 };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('movimiento_handler.php', {
+                        action: 'add',
+                        input1: result.value.input1,
+                        input2: result.value.input2
+                    }, function(response) {
+                        Swal.fire(response.message);
+                        showContent('movimientos');
+                    }, 'json');
+                }
+            });
+        }
+
+        function editEntry(id) {
+            Swal.fire({
+                title: 'Editar Entrada',
+                html: '<input id="edit-input1" class="swal2-input" placeholder="Campo 1">' + 
+                      '<input id="edit-input2" class="swal2-input" placeholder="Campo 2">',
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+                preConfirm: () => {
+                    const input1 = $('#edit-input1').val();
+                    const input2 = $('#edit-input2').val();
+                    if (!input1 || !input2) {
+                        Swal.showValidationMessage('Por favor llena ambos campos');
+                    }
+                    return { input1, input2 };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('movimiento_handler.php', {
+                        action: 'edit',
+                        id: id,
+                        input1: result.value.input1,
+                        input2: result.value.input2
+                    }, function(response) {
+                        Swal.fire(response.message);
+                        showContent('movimientos');
+                    }, 'json');
+                }
+            });
+        }
+
+        function deleteEntry(id) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás revertir esto!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminarlo',
+                cancelButtonText: 'No, cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('movimiento_handler.php', { action: 'delete', id: id }, function(response) {
+                        Swal.fire(response.message);
+                        showContent('movimientos');
+                    }, 'json');
+                }
+            });
+        }
 </script>
 
 </body>
