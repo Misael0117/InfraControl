@@ -24,6 +24,7 @@ try {
                         <th>Cantidad</th>
                         <th>Costo</th>
                         <th>Fecha</th>
+                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>";
@@ -42,6 +43,10 @@ try {
                     <td>{$row['cantidad']}</td>
                     <td>{$row['costo']}</td>
                     <td>{$row['fecha']}</td>
+                    <td>
+                    <button class='btn btn-warning btn-sm' onclick='editEntry(\"salida\", {$row['id']})'>Editar</button>
+                        <button class='btn btn-danger btn-sm' onclick='deleteEntry(\"salida\", {$row['id']})'>Eliminar</button>
+                    </td>
                   </tr>";
         }
         echo "</tbody></table>";
