@@ -29,3 +29,17 @@
     font-weight: bold;
     margin-left: 10px;
 }
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.action-buttons {
+    display: none;
+}
+tr:hover .action-buttons {
+    display: inline-block;
+}
+.add-button {
+    margin: 10px 0;
+}
