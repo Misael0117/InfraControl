@@ -7,6 +7,8 @@ try {
     $query = "SELECT id, categoria, producto, fecha_salida, producto_id, folio, supervisor, colonia, calle, usuario, contrato, medidor, cantidad, costo, fecha FROM salida_material";
     $stmt = $conn->query($query);
 
+    echo "<button class='btn btn-primary' onclick='addEntry()'>Añadir Salida</button>";
+
     if ($stmt->rowCount() > 0) {  
         echo "<table class='table table-striped'>
                 <thead>
