@@ -198,6 +198,35 @@ function editEntry(type, id) {
     });
 }
 
+function deleteEntry(type, id) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción no se puede deshacer',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.post('movimiento_handler.php', {
+                action: 'delete',
+                id: id,
+                type: type
+            }, function(response) {
+                Swal.fire({
+                    title: response.success ? 'Éxito' : 'Error',
+                    text: response.message,
+                    icon: response.success ? 'success' : 'error'
+                }).then(() => {
+                    if (response.success) {
+                        location.reload();  // Recargar la página para mostrar los cambios
+                    }
+                });
+            }, 'json');
+        }
+    });
+}
+
 
 
 

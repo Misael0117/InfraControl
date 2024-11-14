@@ -67,6 +67,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $response = array('success' => false, 'message' => 'Error al ejecutar la consulta: ' . $e->getMessage());
         }
 
+    // Si la acción es eliminar una entrada
+    } elseif ($action == 'delete' && $type == 'entrada') {
+        $id = $_POST['id'];
+
+        try {
+            $query = "DELETE FROM entrada_materiales WHERE id = :id";
+            $stmt = $conn->prepare($query);
+            $stmt->bindParam(':id', $id);
+
+            if ($stmt->execute()) {
+                $response = array('success' => true, 'message' => 'Entrada eliminada exitosamente.');
+            } else {
+                $response = array('success' => false, 'message' => 'Error al eliminar la entrada.');
+            }
+        } catch (PDOException $e) {
+            $response = array('success' => false, 'message' => 'Error al ejecutar la consulta: ' . $e->getMessage());
+        }
+
     } else {
         $response = array('success' => false, 'message' => 'Acción no reconocida o tipo de movimiento no válido.');
     }
