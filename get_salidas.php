@@ -4,7 +4,7 @@ include 'config.php';
 
 try {
     // Consulta a la tabla `salida_material`
-    $query = "SELECT id, categoria, producto, fecha_salida, producto_id, folio, supervisor, colonia, calle, usuario, contrato, medidor, cantidad, costo, fecha FROM salida_material";
+    $query = "SELECT id, categoria, producto, folio, supervisor, colonia, calle, usuario, contrato, medidor, cantidad, costo, fecha FROM salida_material";
     $stmt = $conn->query($query);
 
     echo "<button class='btn btn-primary' onclick='addEntry()'>Añadir Salida</button>";
@@ -15,7 +15,6 @@ try {
                     <tr>
                         <th>Categoría</th>
                         <th>Producto</th>
-                        <th>Fecha de Salida</th>
                         <th>Folio</th>
                         <th>Supervisor</th>
                         <th>Colonia</th>
@@ -34,7 +33,6 @@ try {
             echo "<tr>
                     <td>{$row['categoria']}</td>
                     <td>{$row['producto']}</td>
-                    <td>{$row['fecha_salida']}</td>
                     <td>{$row['folio']}</td>
                     <td>{$row['supervisor']}</td>
                     <td>{$row['colonia']}</td>

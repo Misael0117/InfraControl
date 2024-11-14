@@ -17,4 +17,10 @@ try {
     die('No se puede conectar a la base de datos: '. $e->getMessage());
 }
 
+// Función para cerrar la conexión a la base de datos
+function closeConnection() {
+    global $conn;
+    $conn = null;
+}
+
 ?>
