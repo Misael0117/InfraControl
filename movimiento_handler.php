@@ -91,4 +91,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     echo json_encode($response);
 }
+
+if ($action == 'add' && $type == 'salida') {
+    // Captura de datos desde POST
+    $categoria = $_POST['categoria'];
+    $producto = $_POST['producto'];
+    $folio = $_POST['folio'];
+    $supervisor = $_POST['supervisor'];
+    $colonia = $_POST['colonia'];
+    $calle = $_POST['calle'];
+    $usuario = $_POST['usuario'];
+    $contrato = $_POST['contrato'];
+    $medidor = $_POST['medidor'];
+    $cantidad = $_POST['cantidad'];
+    $costo = $_POST['costo'];
+    $fecha = $_POST['fecha'];  // Usando 'fecha' para consistencia con el formulario
+
+    try {
+        // Consulta SQL para añadir una nueva salida
+        $query = "INSERT INTO salida_material (categoria, producto, folio, supervisor, colonia, calle, usuario, contrato, medidor, cantidad, costo, fecha) 
+                  VALUES (:categoria, :producto, :folio, :supervisor, :colonia, :calle, :usuario, :contrato, :medidor, :cantidad, :costo, :fecha)";
+        
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':categoria', $categoria);
+        $stmt->bindParam(':producto', $producto);
+        $stmt->bindParam(':folio', $folio);
+        $stmt->bindParam(':supervisor', $supervisor);
+        $stmt->bindParam(':colonia', $colonia);
+        $stmt->bindParam(':calle', $calle);
+        $stmt->bindParam(':usuario', $usuario);
+        $stmt->bindParam(':contrato', $contrato);
+        $stmt->bindParam(':medidor', $medidor);
+        $stmt->bindParam(':cantidad', $cantidad);
+        $stmt->bindParam(':costo', $costo); 
+        $stmt->bindParam(':fecha', $fecha);  // Usando 'fecha' para consistencia
+
+        // Ejecución de la consulta
+        if ($stmt->execute()) {
+            $response = array('success' => true, 'message' => 'Salida agregada exitosamente.');
+        } else {
+            $response = array('success' => false, 'message' => 'Error al agregar la salida.');
+        }
+    } catch (PDOException $e) {
+        // Manejo de errores de la base de datos
+        $response = array('success' => false, 'message' => 'Error al ejecutar la consulta: ' . $e->getMessage());
+    }
+
+    // Enviar la respuesta en formato JSON
+    echo json_encode($response);
+}
+
+
 ?>

@@ -227,6 +227,79 @@ function deleteEntry(type, id) {
     });
 }
 
+//funncionalidad para la salida de materiales
+function loadAddSalidaForm() {
+    $.get('add_salidas.php', function(data) {
+        Swal.fire({
+            title: 'Añadir Nueva Salida',
+            html: data,
+            showCancelButton: true,
+            confirmButtonText: 'Guardar Salida',
+            preConfirm: () => {
+                const categoria = $('#categoria').val();
+                const producto = $('#producto').val();
+                const folio = $('#folio').val();
+                const supervisor = $('#supervisor').val();
+                const colonia = $('#colonia').val();
+                const calle = $('#calle').val();
+                const usuario = $('#usuario').val();
+                const contrato = $('#contrato').val();
+                const medidor = $('#medidor').val();
+                const cantidad = $('#cantidad').val();
+                const costo = $('#costo').val();
+                const fecha = $('#fecha').val();
+                
+                if (!categoria || !producto || !folio || !supervisor || !colonia || !calle || !usuario || !contrato || !medidor || !cantidad || !costo || !fecha) {
+                    Swal.showValidationMessage('Por favor llena todos los campos');
+                    return false;
+                }
+
+                const data = {
+                    categoria: categoria,
+                    producto: producto,
+                    folio: folio,
+                    supervisor: supervisor,
+                    colonia: colonia,
+                    calle: calle,
+                    usuario: usuario,
+                    contrato: contrato,
+                    medidor: medidor,
+                    cantidad: cantidad,
+                    costo: costo,
+                    fecha: fecha,
+                    action: 'add',
+                    type: 'salida'
+                };
+
+                return data;
+            }
+            // Resto de la configuración
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'salida_handler.php',
+                    data: result.value,
+                    dataType: 'json',
+                    success: function(response) {
+                        Swal.fire({
+                            title: response.success ? 'Éxito' : 'Error',
+                            text: response.message,
+                            icon: response.success ? 'success' : 'error'
+                        }).then(() => {
+                            if (response.success) {
+                                location.reload();  // Recargar la página para mostrar la nueva salida
+                            }
+                        });
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Hubo un problema al enviar los datos.', 'error');
+                    }
+                });
+            }
+        });
+    });
+}
 
 
 
