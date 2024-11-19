@@ -16,7 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $fecha = $_POST['fecha'];
 
         try {
-            $query = "INSERT INTO entrada_materiales (categoria, producto, factura, proveedor, cantidad, costo, fecha) VALUES (:categoria, :producto, :factura, :proveedor, :cantidad, :costo, :fecha)";
+            $query = "INSERT INTO entrada_materiales (categoria, producto, factura, proveedor, cantidad, costo, fecha) 
+            VALUES (:categoria, :producto, :factura, :proveedor, :cantidad, :costo, :fecha)";
             $stmt = $conn->prepare($query);
             $stmt->bindParam(':categoria', $categoria);
             $stmt->bindParam(':producto', $producto);
@@ -47,7 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $fecha = $_POST['fecha'];
 
         try {
-            $query = "UPDATE entrada_materiales SET categoria = :categoria, producto = :producto, factura = :factura, proveedor = :proveedor, cantidad = :cantidad, costo = :costo, fecha = :fecha WHERE id = :id";
+            $query = "UPDATE entrada_materiales SET categoria = :categoria, producto = :producto, factura = :factura, 
+            proveedor = :proveedor, cantidad = :cantidad, costo = :costo, fecha = :fecha WHERE id = :id";
             $stmt = $conn->prepare($query);
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':categoria', $categoria);

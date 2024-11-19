@@ -278,7 +278,7 @@ function loadAddSalidaForm() {
             if (result.isConfirmed) {
                 $.ajax({
                     type: 'POST',
-                    url: 'salida_handler.php',
+                    url: 'salidas_handler.php',
                     data: result.value,
                     dataType: 'json',
                     success: function(response) {
@@ -299,6 +299,113 @@ function loadAddSalidaForm() {
             }
         });
     });
+}
+
+//funcionalidad para la edicion de salidas
+function editEntry(type, id) {
+    if (type === 'salida') {
+        $.get(`edit_salidas.php?id=${id}`, function(data) {
+            Swal.fire({
+                title: 'Editar Salida',
+                html: data,
+                showCancelButton: true,
+                confirmButtonText: 'Guardar Cambios',
+                preConfirm: () => {
+                    const categoria = $('#categoria').val();
+                    const producto = $('#producto').val();
+                    const folio = $('#folio').val();
+                    const supervisor = $('#supervisor').val();
+                    const colonia = $('#colonia').val();
+                    const calle = $('#calle').val();
+                    const usuario = $('#usuario').val();
+                    const contrato = $('#contrato').val();
+                    const medidor = $('#medidor').val();
+                    const cantidad = $('#cantidad').val();
+                    const costo = $('#costo').val();
+                    const fecha = $('#fecha').val();
+                    
+                    if (!categoria || !producto || !folio || !supervisor || !colonia || !calle || !usuario || !contrato || !medidor || !cantidad || !costo || !fecha) {
+                        Swal.showValidationMessage('Por favor llena todos los campos');
+                        return false;
+                    }
+
+                    const data = {
+                        id: id,
+                        categoria: categoria,
+                        producto: producto,
+                        folio: folio,
+                        supervisor: supervisor,
+                        colonia: colonia,
+                        calle: calle,
+                        usuario: usuario,
+                        contrato: contrato,
+                        medidor: medidor,
+                        cantidad: cantidad,
+                        costo: costo,
+                        fecha: fecha,
+                        action: 'edit',
+                        type: 'salida'
+                    };
+
+                    return data;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'salidas_handler.php',
+                        data: result.value,
+                        dataType: 'json',
+                        success: function(response) {
+                            Swal.fire({
+                                title: response.success ? 'Éxito' : 'Error',
+                                text: response.message,
+                                icon: response.success ? 'success' : 'error'
+                            }).then(() => {
+                                if (response.success) {
+                                    location.reload();  // Recargar la página para mostrar los cambios
+                                }
+                            });
+                        },
+                        error: function() {
+                            Swal.fire('Error', 'Hubo un problema al enviar los datos.', 'error');
+                        }
+                    });
+                }
+            });
+        });
+    }
+}
+
+function deleteEntry(type, id) {
+    if (type === 'salida') {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post('salidas_handler.php', {
+                    action: 'delete',
+                    id: id,
+                    type: type
+                }, function(response) {
+                    Swal.fire({
+                        title: response.success ? 'Éxito' : 'Error',
+                        text: response.message,
+                        icon: response.success ? 'success' : 'error'
+                    }).then(() => {
+                        if (response.success) {
+                            location.reload();  // Recargar la página para mostrar los cambios
+                        }
+                    });
+                }, 'json');
+            }
+        });
+    }
 }
 
 
