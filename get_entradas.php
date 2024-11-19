@@ -34,8 +34,8 @@ try {
                     <td>{$row['costo']}</td>
                     <td>{$row['fecha']}</td>
                     <td>
-                        <button class='btn btn-warning btn-sm' onclick='editEntry(\"entrada\", {$row['id']})'>Editar</button>
-                        <button class='btn btn-danger btn-sm' onclick='deleteEntry(\"entrada\", {$row['id']})'>Eliminar</button>
+                        <button class='btn btn-warning btn-sm' onclick='modifyRecord(\"entrada\", {$row['id']})'>Editar</button>
+                        <button class='btn btn-danger btn-sm' onclick='removeEntry(\"entrada\", {$row['id']})'>Eliminar</button>
                     </td>
                   </tr>";
         }
