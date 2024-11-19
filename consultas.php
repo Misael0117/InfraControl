@@ -135,7 +135,7 @@ include 'user_info.php';
     });
 }
 
-function editEntry(type, id) {
+function modifyRecord(type, id) {
     $.get(`edit_entradas.php?id=${id}`, function(data) {
         Swal.fire({
             title: 'Editar Entrada',
@@ -198,7 +198,7 @@ function editEntry(type, id) {
     });
 }
 
-function deleteEntry(type, id) {
+function removeEntry(type, id) {
     Swal.fire({
         title: '¿Estás seguro?',
         text: 'Esta acción no se puede deshacer',
