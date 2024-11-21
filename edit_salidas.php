@@ -52,11 +52,11 @@ try {
             </div>
             <div class="form-group">
                 <label for="cantidad">Cantidad:</label>
-                <input type="number" class="form-control" id="cantidad" name="cantidad" value="' . $row['cantidad'] . '" step="0.01" required>
+                <input type="text" class="form-control" id="cantidad" name="cantidad" value="' . $row['cantidad'] . '" step="0.01" required>
             </div>
             <div class="form-group">
                 <label for="costo">Costo:</label>
-                <input type="number" class="form-control" id="costo" name="costo" value="' . $row['costo'] . '" step="0.01" required>
+                <input type="text" class="form-control" id="costo" name="costo" value="' . $row['costo'] . '" step="0.01" required>
             </div>
             <div class="form-group">
                 <label for="fecha">Fecha de Salida:</label>
