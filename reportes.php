@@ -16,27 +16,7 @@ include 'user_info.php';
     <!-- CSS de Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- CSS personalizado -->
-    <style>
-        .modal-header {
-            background-color: #6c757d;
-            color: white;
-        }
-        .btn-custom {
-            background-color: #5a67d8;
-            color: white;
-        }
-        .option {
-            display: block;
-            padding: 10px 20px;
-            margin: 10px;
-            border-radius: 8px;
-            background-color: #e2e8f0;
-            color: #2d3748;
-            text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="css/reportes.css">
 </head>
 <body>
 <div class="container mt-3">
