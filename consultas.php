@@ -22,7 +22,7 @@ include 'user_info.php';
 </head>
 <body>
     <div class="container">
-        <!-- Información del usuario y botón de regreso al inicio -->
+        <!-- botón de regreso al inicio -->
         <div class="d-flex justify-content-between align-items-center mt-3">
             <a href="home.php" class="btn btn-primary">Regresar</a>
         </div>
