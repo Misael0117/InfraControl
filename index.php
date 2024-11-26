@@ -51,33 +51,69 @@ include "config.php"; // Conectar con la base de datos
 if(isset($_POST['but_submit'])){
     $username = $_POST['txt_uname'];
     $password = $_POST['txt_pwd'];
+
     if($username != "" && $password != ""){
         // Preparar la consulta con los parámetros
-        $stmt = $conn->prepare("SELECT id, username, password FROM usuarios WHERE username = :username AND password = :password AND estado = 1");
-        
-        // Vincular los parámetros con los valores del formulario
+        $stmt = $conn->prepare("SELECT id, username, password, estado FROM usuarios WHERE username = :username");
         $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $password);
 
         // Ejecutar la consulta
         try {
             $stmt->execute();
             $record = $stmt->fetch(PDO::FETCH_ASSOC);
-            if($record){
-                // Iniciar sesión si los datos son correctos
-                $_SESSION['usuario'] = $record['username'];
-                echo "<script>
-                    Swal.fire({
-                        title: 'Usuario validado',
-                        icon: 'success',
-                        confirmButtonText: 'Aceptar'
-                    }).then(function(){
-                        window.location = 'home.php';
-                    });
-                </script>";
-            } else {
 
-                // negar acceso si los datos son incorrectos
+            if($record){
+                // Verificar si el usuario está activo
+                if ($record['estado'] == 1) {
+                    // Comprobar si la contraseña está encriptada
+                    if (password_verify($password, $record['password'])) {
+                        // Si la contraseña es válida y está encriptada
+                        $_SESSION['usuario'] = $record['username'];
+                        echo "<script>
+                            Swal.fire({
+                                title: 'Usuario validado',
+                                icon: 'success',
+                                confirmButtonText: 'Aceptar'
+                            }).then(function(){
+                                window.location = 'home.php';
+                            });
+                        </script>";
+                    } else if ($password === $record['password']) {
+                        // Si la contraseña es válida y no está encriptada
+                        $_SESSION['usuario'] = $record['username'];
+                        echo "<script>
+                            Swal.fire({
+                                title: 'Usuario validado',
+                                icon: 'success',
+                                confirmButtonText: 'Aceptar'
+                            }).then(function(){
+                                window.location = 'home.php';
+                            });
+                        </script>";
+                    } else {
+                        // Negar acceso si la contraseña es incorrecta
+                        echo "<script>
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Usuario o contraseña incorrectos',
+                                icon: 'error',
+                                confirmButtonText: 'Intentar de nuevo'
+                            });
+                        </script>";
+                    }
+                } else {
+                    // Negar acceso si el usuario está inactivo
+                    echo "<script>
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'El usuario está inactivo',
+                            icon: 'error',
+                            confirmButtonText: 'Intentar de nuevo'
+                        });
+                    </script>";
+                }
+            } else {
+                // Negar acceso si el usuario no existe
                 echo "<script>
                     Swal.fire({
                         title: 'Error',
