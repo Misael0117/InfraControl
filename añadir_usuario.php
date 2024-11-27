@@ -81,10 +81,8 @@
 </body>
 </html>
 
-
-
 <?php
-require('config.php'); // conexion a la base de datos
+require('config.php'); // Conexión a la base de datos
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = $_POST['nombre'];
@@ -93,8 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_level = $_POST['user_level'];
     $estado = $_POST['estado'];
 
-    // Encriptar la contraseña
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    // No encriptamos la contraseña por el momento
 
     // Consulta SQL para insertar un nuevo usuario
     $sql = "INSERT INTO usuarios (nombre, username, password, user_level, estado) 
@@ -104,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Vincular los parámetros
     $stmt->bindParam(':nombre', $nombre);
     $stmt->bindParam(':username', $username);
-    $stmt->bindParam(':password', $hashed_password);
+    $stmt->bindParam(':password', $password); // Contraseña sin encriptar
     $stmt->bindParam(':user_level', $user_level);
     $stmt->bindParam(':estado', $estado);
 

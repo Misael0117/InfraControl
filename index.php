@@ -49,8 +49,8 @@ session_start();
 include "config.php"; // Conectar con la base de datos
 
 if(isset($_POST['but_submit'])){
-    $username = $_POST['txt_uname'];
-    $password = $_POST['txt_pwd'];
+    $username = trim($_POST['txt_uname']);
+    $password = trim($_POST['txt_pwd']);
 
     if($username != "" && $password != ""){
         // Preparar la consulta con los parámetros
@@ -130,3 +130,4 @@ if(isset($_POST['but_submit'])){
     }
 }
 ?>
+
