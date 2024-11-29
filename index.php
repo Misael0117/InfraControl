@@ -46,18 +46,16 @@
 
 <?php
 session_start();
-include "config.php"; // Conectar con la base de datos
+include "config.php"; // Conexión a la base de datos
 
 if(isset($_POST['but_submit'])){
     $username = trim($_POST['txt_uname']);
     $password = trim($_POST['txt_pwd']);
 
     if($username != "" && $password != ""){
-        // Preparar la consulta con los parámetros
-        $stmt = $conn->prepare("SELECT id, username, password, estado FROM usuarios WHERE username = :username");
+        $stmt = $conn->prepare("SELECT id, username, password, estado, user_level FROM usuarios WHERE username = :username");
         $stmt->bindParam(':username', $username);
 
-        // Ejecutar la consulta
         try {
             $stmt->execute();
             $record = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -65,33 +63,22 @@ if(isset($_POST['but_submit'])){
             if($record){
                 // Verificar si el usuario está activo
                 if ($record['estado'] == 1) {
-                    // Comprobar si la contraseña está encriptada
-                    if (password_verify($password, $record['password'])) {
-                        // Si la contraseña es válida y está encriptada
+                    // Verificar contraseña (encriptada o no)
+                    if (password_verify($password, $record['password']) || $password === $record['password']) {
                         $_SESSION['usuario'] = $record['username'];
+                        $_SESSION['user_level'] = $record['user_level'];
+                        $_SESSION['usuario_id'] = $record['id']; // Asegúrate de guardar el ID del usuario
+
                         echo "<script>
                             Swal.fire({
                                 title: 'Usuario validado',
                                 icon: 'success',
                                 confirmButtonText: 'Aceptar'
                             }).then(function(){
-                                window.location = 'home.php';
-                            });
-                        </script>";
-                    } else if ($password === $record['password']) {
-                        // Si la contraseña es válida y no está encriptada
-                        $_SESSION['usuario'] = $record['username'];
-                        echo "<script>
-                            Swal.fire({
-                                title: 'Usuario validado',
-                                icon: 'success',
-                                confirmButtonText: 'Aceptar'
-                            }).then(function(){
-                                window.location = 'home.php';
+                                window.location.href = 'home.php';
                             });
                         </script>";
                     } else {
-                        // Negar acceso si la contraseña es incorrecta
                         echo "<script>
                             Swal.fire({
                                 title: 'Error',
@@ -102,7 +89,6 @@ if(isset($_POST['but_submit'])){
                         </script>";
                     }
                 } else {
-                    // Negar acceso si el usuario está inactivo
                     echo "<script>
                         Swal.fire({
                             title: 'Error',
@@ -113,7 +99,6 @@ if(isset($_POST['but_submit'])){
                     </script>";
                 }
             } else {
-                // Negar acceso si el usuario no existe
                 echo "<script>
                     Swal.fire({
                         title: 'Error',
@@ -124,10 +109,8 @@ if(isset($_POST['but_submit'])){
                 </script>";
             }
         } catch (PDOException $e) {
-            // Mostrar mensaje de error si ocurre algún problema con la ejecución
             echo "Error al ejecutar la consulta: " . $e->getMessage();
         }
     }
 }
 ?>
-
