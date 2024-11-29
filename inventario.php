@@ -12,7 +12,10 @@
 <body>
 
 <?php
+<<<<<<< HEAD
 
+=======
+>>>>>>> f130701 (modulo inventario 50%)
 include('config.php');
 
 try {
@@ -103,5 +106,10 @@ try {
 
 ?>
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> f130701 (modulo inventario 50%)
 </body>
 </html>
