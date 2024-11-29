@@ -25,6 +25,7 @@ include 'user_info.php';
         </div>
         
         <div class="options-container">
+            <a href="inventario.php" class="option">Inventario</a>
             <a href="consultas.php" class="option">Consultas</a>
             <a href="reportes.php" class="option">Reportes</a>
             <a href="configurar_usuarios.php" class="option">Configurar Usuarios</a>
