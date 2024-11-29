@@ -1,3 +1,16 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfraControl | Inventario</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
 <?php
 session_start();
 include 'config.php';
@@ -13,7 +26,6 @@ try {
 
     // Inicializar variables para el cálculo del saldo
     $saldoAnterior = 0;
-    $costoPromedio = 0;
 
     // Recorrer las entradas y calcular el saldo actualizado
     echo "<table class='table table-striped'>
@@ -23,7 +35,6 @@ try {
                     <th>Saldo Anterior</th>
                     <th>Cantidad Movida</th>
                     <th>Saldo Actual</th>
-                    <th>Costo Promedio</th>
                 </tr>
             </thead>
             <tbody>";
@@ -31,28 +42,24 @@ try {
     while ($row = $stmtEntradas->fetch(PDO::FETCH_ASSOC)) {
         $fecha = $row['fecha'];
         $cantidadMovimiento = (float) $row['cantidad'];
-        $costoMovimiento = (float) $row['costo'];
 
         // Calcular el saldo actualizado para la entrada
         $nuevoSaldo = $saldoAnterior + $cantidadMovimiento;
-        $costoPromedio = (($saldoAnterior * $costoPromedio) + ($cantidadMovimiento * $costoMovimiento)) / ($saldoAnterior + $cantidadMovimiento);
 
         // Formatear los valores a dos decimales
         $saldoAnteriorFormateado = number_format($saldoAnterior, 2, '.', '');
         $cantidadMovimientoFormateada = number_format($cantidadMovimiento, 2, '.', '');
         $nuevoSaldoFormateado = number_format($nuevoSaldo, 2, '.', '');
-        $costoPromedioFormateado = number_format($costoPromedio, 2, '.', '');
 
         // Insertar en la tabla `saldos_material`
-        $insertQuery = "INSERT INTO saldos_material (fecha, saldo_anterior, cantidad_movida, saldo_actual, costo_promedio) 
-                        VALUES (:fecha, :saldo_anterior, :cantidad_movida, :saldo_actual, :costo_promedio)";
+        $insertQuery = "INSERT INTO saldos_material (fecha, saldo_anterior, cantidad_movida, saldo_actual) 
+                        VALUES (:fecha, :saldo_anterior, :cantidad_movida, :saldo_actual)";
         $insertStmt = $conn->prepare($insertQuery);
         $insertStmt->execute([
             ':fecha' => $fecha,
             ':saldo_anterior' => $saldoAnteriorFormateado,
             ':cantidad_movida' => $cantidadMovimientoFormateada,
-            ':saldo_actual' => $nuevoSaldoFormateado,
-            ':costo_promedio' => $costoPromedioFormateado
+            ':saldo_actual' => $nuevoSaldoFormateado
         ]);
 
         // Mostrar la entrada en la tabla
@@ -61,7 +68,6 @@ try {
                 <td>{$saldoAnteriorFormateado}</td>
                 <td>+{$cantidadMovimientoFormateada}</td>
                 <td>{$nuevoSaldoFormateado}</td>
-                <td>{$costoPromedioFormateado}</td>
               </tr>";
         
         // Actualizar el saldo anterior
@@ -72,30 +78,24 @@ try {
     while ($row = $stmtSalidas->fetch(PDO::FETCH_ASSOC)) {
         $fecha = $row['fecha'];
         $cantidadMovimiento = (float) $row['cantidad'];
-        $costoMovimiento = $costoPromedio;  // Para las salidas usamos el costo promedio existente
 
         // Calcular el saldo actualizado para la salida
         $nuevoSaldo = $saldoAnterior - $cantidadMovimiento;
-        if ($nuevoSaldo != 0) {
-            $costoPromedio = (($saldoAnterior * $costoPromedio) - ($cantidadMovimiento * $costoMovimiento)) / $nuevoSaldo;
-        }
 
         // Formatear los valores a dos decimales
         $saldoAnteriorFormateado = number_format($saldoAnterior, 2, '.', '');
         $cantidadMovimientoFormateada = number_format($cantidadMovimiento, 2, '.', '');
         $nuevoSaldoFormateado = number_format($nuevoSaldo, 2, '.', '');
-        $costoPromedioFormateado = number_format($costoPromedio, 2, '.', '');
 
         // Insertar en la tabla `saldos_material`
-        $insertQuery = "INSERT INTO saldos_material (fecha, saldo_anterior, cantidad_movida, saldo_actual, costo_promedio) 
-                        VALUES (:fecha, :saldo_anterior, :cantidad_movida, :saldo_actual, :costo_promedio)";
+        $insertQuery = "INSERT INTO saldos_material (fecha, saldo_anterior, cantidad_movida, saldo_actual) 
+                        VALUES (:fecha, :saldo_anterior, :cantidad_movida, :saldo_actual)";
         $insertStmt = $conn->prepare($insertQuery);
         $insertStmt->execute([
             ':fecha' => $fecha,
             ':saldo_anterior' => $saldoAnteriorFormateado,
             ':cantidad_movida' => '-'.$cantidadMovimientoFormateada,
-            ':saldo_actual' => $nuevoSaldoFormateado,
-            ':costo_promedio' => $costoPromedioFormateado
+            ':saldo_actual' => $nuevoSaldoFormateado
         ]);
 
         // Mostrar la salida en la tabla
@@ -104,7 +104,6 @@ try {
                 <td>{$saldoAnteriorFormateado}</td>
                 <td>-{$cantidadMovimientoFormateada}</td>
                 <td>{$nuevoSaldoFormateado}</td>
-                <td>{$costoPromedioFormateado}</td>
               </tr>";
         
         // Actualizar el saldo anterior
@@ -117,3 +116,6 @@ try {
     echo "<p>Error al ejecutar la consulta: " . $e->getMessage() . "</p>";
 }
 ?>
+
+</body>
+</html>
