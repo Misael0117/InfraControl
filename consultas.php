@@ -4,7 +4,6 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: index.php");
     exit();
 }
-include('acceso_usuarios.php');
 include 'user_info.php';
 ?>
 
