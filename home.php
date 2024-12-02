@@ -24,9 +24,15 @@ include 'user_info.php';
         
         <div class="options-container">
             <a href="inventario.php" class="option">Inventario</a>
-            <a href="consultas.php" class="option">Consultas</a>
-            <a href="reportes.php" class="option">Reportes</a>
-            <a href="configurar_usuarios.php" class="option">Configurar Usuarios</a>
+            <?php if ($_SESSION['user_level'] == 2) { ?>
+                <a href="consultas.php" class="option">Consultas</a>
+                <a href="reportes.php" class="option">Reportes</a>
+            <?php } ?>
+            <?php if ($_SESSION['user_level'] == 1) { ?>
+                <a href="consultas.php" class="option">Consultas</a>
+                <a href="reportes.php" class="option">Reportes</a>
+                <a href="configurar_usuarios.php" class="option">Configurar Usuarios</a>
+            <?php } ?>
         </div>
 
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
