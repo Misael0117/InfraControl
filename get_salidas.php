@@ -41,7 +41,7 @@ try {
                     <td>{$row['contrato']}</td>
                     <td>{$row['medidor']}</td>
                     <td>{$row['cantidad']}</td>
-                    <td>{$row['costo']}</td>
+                    <td>$ {$row['costo']}</td>
                     <td>{$row['fecha']}</td>
                     <td>
                     <button class='btn btn-warning btn-sm' onclick='editEntry(\"salida\", {$row['id']})'>Editar</button>

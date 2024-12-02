@@ -12,17 +12,11 @@
 <body>
 
 <?php
-<<<<<<< HEAD
-
-=======
->>>>>>> f130701 (modulo inventario 50%)
 include('config.php');
 
-try {
-    $connect = new PDO("mysql:host=localhost;dbname=infracontrol", "root", "", array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
-} catch (PDOException $e) {
-    exit("Error: " . $e->getMessage());
-}
+
+// Conexión a la base de datos
+include('config.php');
 
 try {
     // Consulta para obtener la información del inventario
@@ -30,29 +24,56 @@ try {
         SELECT
             e.categoria AS categoria,
             e.producto AS producto,
-            SUM(e.cantidad) AS total_entradas,
-            SUM(e.costo * e.cantidad) AS total_costo,
-            SUM(e.cantidad) AS total_cantidad,
-            MAX(e.costo) AS costo_inicial,
+            e.cantidad AS cantidad,
+            e.costo AS costo,
             COALESCE((
                 SELECT SUM(s.cantidad) 
                 FROM salida_material s 
                 WHERE s.producto = e.producto AND s.categoria = e.categoria
-            ), 0) AS total_salidas,
-            SUM(e.cantidad) - COALESCE((
-                SELECT SUM(s.cantidad) 
-                FROM salida_material s 
-                WHERE s.producto = e.producto AND s.categoria = e.categoria
-            ), 0) AS stock_actual
+            ), 0) AS total_salidas
         FROM entrada_materiales e
-        GROUP BY e.categoria, e.producto
-        HAVING stock_actual > 0
         ORDER BY e.categoria, e.producto
     ";
 
-    $stmt = $connect->query($query);
+    // Ejecutar la consulta
+    $stmt = $conn->query($query);
 
+    // Verificar si hay resultados
     if ($stmt->rowCount() > 0) {
+        $inventario = [];
+        // Recorrer los resultados y almacenar los datos en un array
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $inventario[] = $row;
+        }
+
+        // Calcular total_entradas, total_costo, total_cantidad, stock_actual y costo_promedio en PHP
+        $productos = [];
+
+        foreach ($inventario as $item) {
+            $categoria = $item['categoria'];
+            $producto = $item['producto'];
+
+            if (!isset($productos[$categoria])) {
+                $productos[$categoria] = [];
+            }
+
+            if (!isset($productos[$categoria][$producto])) {
+                $productos[$categoria][$producto] = [
+                    'total_entradas' => 0,
+                    'total_salidas' => floatval($item['total_salidas']),
+                    'total_cantidad' => 0,
+                    'total_costo' => 0,
+                    'stock_actual' => 0,
+                    'costo_inicial' => floatval($item['costo'])
+                ];
+            }
+
+            $productos[$categoria][$producto]['total_entradas'] += floatval($item['cantidad']);
+            $productos[$categoria][$producto]['total_cantidad'] += floatval($item['cantidad']);
+            $productos[$categoria][$producto]['total_costo'] += floatval($item['cantidad']) * floatval($item['costo']);
+            $productos[$categoria][$producto]['stock_actual'] = $productos[$categoria][$producto]['total_cantidad'] - $productos[$categoria][$producto]['total_salidas'];
+        }
+
         echo '<div class="container mt-3 animate__animated animate__fadeIn">';
         echo '<a href="home.php" class="btn btn-secondary mb-3">Regresar</a>';
         echo '<table class="table table-striped">';
@@ -70,28 +91,23 @@ try {
               </thead>';
         echo '<tbody>';
 
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            // Verificar datos de costo y cantidad
-            $total_costo = floatval($row['total_costo']);
-            $total_cantidad = intval($row['total_cantidad']);
+        foreach ($productos as $categoria => $productos_categoria) {
+            foreach ($productos_categoria as $producto => $datos) {
+                $total_costo = $datos['total_costo'];
+                $total_cantidad = $datos['total_cantidad'];
+                $costo_promedio = $total_cantidad > 0 ? $total_costo / $total_cantidad : $datos['costo_inicial'];
 
-            // Calcular el costo promedio
-            if ($total_costo > 0 && $total_cantidad > 0) {
-                $costo_promedio = $total_costo / $total_cantidad;
-            } else {
-                $costo_promedio = floatval($row['costo_inicial']);
+                echo '<tr>';
+                echo '<td>' . htmlspecialchars($categoria) . '</td>';
+                echo '<td>' . htmlspecialchars($producto) . '</td>';
+                echo '<td>' . htmlspecialchars($datos['total_entradas']) . '</td>';
+                echo '<td>' . htmlspecialchars($datos['total_salidas']) . '</td>';
+                echo '<td>' . htmlspecialchars($datos['stock_actual']) . '</td>';
+                echo '<td>$' . number_format($total_costo, 2) . '</td>';
+                echo '<td>' . htmlspecialchars($total_cantidad) . '</td>';
+                echo '<td>$' . number_format($costo_promedio, 2) . '</td>';
+                echo '</tr>';
             }
-
-            echo '<tr>';
-            echo '<td>' . htmlspecialchars($row['categoria']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['producto']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['total_entradas']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['total_salidas']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['stock_actual']) . '</td>';
-            echo '<td>' . htmlspecialchars($total_costo) . '</td>';
-            echo '<td>' . htmlspecialchars($total_cantidad) . '</td>';
-            echo '<td>$' . number_format($costo_promedio, 2) . '</td>';
-            echo '</tr>';
         }
 
         echo '</tbody>';
@@ -106,10 +122,5 @@ try {
 
 ?>
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> f130701 (modulo inventario 50%)
 </body>
 </html>
