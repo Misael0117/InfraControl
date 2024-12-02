@@ -12,19 +12,10 @@
 <body>
 
 <?php
-<<<<<<< HEAD
-include('config.php');
-
 
 // Conexión a la base de datos
 include('config.php');
 
-=======
-
-// Conexión a la base de datos
-include('config.php');
-
->>>>>>> 730db4c53c3ab8f5b16b322067e7f8bf66f78829
 try {
     // Consulta para obtener la información del inventario
     $query = "
