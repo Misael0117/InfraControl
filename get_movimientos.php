@@ -33,7 +33,7 @@ try {
                     <td>{$row['tipo_movimiento']}</td>
                     <td>{$row['producto']}</td>
                     <td>{$row['cantidad']}</td>
-                    <td>{$row['costo']}</td>
+                    <td>$ {$row['costo']}</td>
                     <td>{$row['fecha']}</td>
                   </tr>";
         }

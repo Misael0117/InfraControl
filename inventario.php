@@ -44,7 +44,7 @@ try {
             $inventario[] = $row;
         }
 
-        // Calcular total_entradas, total_costo, total_cantidad, stock_actual y costo_promedio en PHP
+        // Calcular total_entradas, total_costo, stock_actual y costo_promedio en PHP
         $productos = [];
 
         foreach ($inventario as $item) {
@@ -59,17 +59,15 @@ try {
                 $productos[$categoria][$producto] = [
                     'total_entradas' => 0,
                     'total_salidas' => floatval($item['total_salidas']),
-                    'total_cantidad' => 0,
                     'total_costo' => 0,
                     'stock_actual' => 0,
-                    'costo_inicial' => floatval($item['costo'])
+                    'costo_inicial' => isset($item['costo']) ? floatval($item['costo']) : 0
                 ];
             }
 
-            $productos[$categoria][$producto]['total_entradas'] += floatval($item['cantidad']);
-            $productos[$categoria][$producto]['total_cantidad'] += floatval($item['cantidad']);
-            $productos[$categoria][$producto]['total_costo'] += floatval($item['cantidad']) * floatval($item['costo']);
-            $productos[$categoria][$producto]['stock_actual'] = $productos[$categoria][$producto]['total_cantidad'] - $productos[$categoria][$producto]['total_salidas'];
+            $productos[$categoria][$producto]['total_entradas'] += isset($item['cantidad']) ? floatval($item['cantidad']) : 0;
+            $productos[$categoria][$producto]['total_costo'] += isset($item['cantidad']) && isset($item['costo']) ? floatval($item['cantidad']) * floatval($item['costo']) : 0;
+            $productos[$categoria][$producto]['stock_actual'] = $productos[$categoria][$producto]['total_entradas'] - $productos[$categoria][$producto]['total_salidas'];
         }
 
         echo '<div class="container mt-3 animate__animated animate__fadeIn">';
@@ -82,8 +80,7 @@ try {
                     <th>Total Entradas</th>
                     <th>Total Salidas</th>
                     <th>Stock Actual</th>
-                    <th>Total Costo</th>
-                    <th>Total Cantidad</th>
+                    <th>Costo Total</th>
                     <th>Costo Promedio</th>
                 </tr>
               </thead>';
@@ -92,17 +89,25 @@ try {
         foreach ($productos as $categoria => $productos_categoria) {
             foreach ($productos_categoria as $producto => $datos) {
                 $total_costo = $datos['total_costo'];
-                $total_cantidad = $datos['total_cantidad'];
-                $costo_promedio = $total_cantidad > 0 ? $total_costo / $total_cantidad : $datos['costo_inicial'];
+                $total_cantidad = $datos['total_entradas']; // Se usa solo el total de entradas para calcular el costo promedio
+                $ultimo_costo_promedio = $datos['costo_inicial']; // Inicialmente se usa el costo inicial
+                $existencias = $productos[$categoria][$producto]['stock_actual'];
+                $cantidad_movimiento = floatval($datos['total_entradas']) - floatval($datos['total_salidas']);
+                $costo_movimiento = isset($datos['costo']) ? floatval($datos['costo']) : 0;
+
+                if ($existencias + $cantidad_movimiento != 0) {
+                    $costo_promedio = (($existencias * $ultimo_costo_promedio) + ($cantidad_movimiento * $costo_movimiento)) / ($existencias + $cantidad_movimiento);
+                } else {
+                    $costo_promedio = $ultimo_costo_promedio;
+                }
 
                 echo '<tr>';
                 echo '<td>' . htmlspecialchars($categoria) . '</td>';
                 echo '<td>' . htmlspecialchars($producto) . '</td>';
                 echo '<td>' . htmlspecialchars($datos['total_entradas']) . '</td>';
                 echo '<td>' . htmlspecialchars($datos['total_salidas']) . '</td>';
-                echo '<td>' . htmlspecialchars($datos['stock_actual']) . '</td>';
+                echo '<td>' . htmlspecialchars($productos[$categoria][$producto]['stock_actual']) . '</td>';
                 echo '<td>$' . number_format($total_costo, 2) . '</td>';
-                echo '<td>' . htmlspecialchars($total_cantidad) . '</td>';
                 echo '<td>$' . number_format($costo_promedio, 2) . '</td>';
                 echo '</tr>';
             }
