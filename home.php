@@ -25,11 +25,11 @@ include 'user_info.php';
         <div class="options-container">
             <a href="inventario.php" class="option">Inventario</a>
             <?php if ($_SESSION['user_level'] == 2) { ?>
-                <a href="consultas.php" class="option">Consultas</a>
+                <a href="movimientos_inventario.php" class="option">Movimientos al inventario</a>
                 <a href="reportes.php" class="option">Reportes</a>
             <?php } ?>
             <?php if ($_SESSION['user_level'] == 1) { ?>
-                <a href="consultas.php" class="option">Consultas</a>
+                <a href="movimientos_inventario.php" class="option">Movimientos al inventario</a>
                 <a href="reportes.php" class="option">Reportes</a>
                 <a href="configurar_usuarios.php" class="option">Configurar Usuarios</a>
             <?php } ?>

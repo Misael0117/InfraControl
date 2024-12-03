@@ -61,13 +61,19 @@ try {
                     'total_salidas' => floatval($item['total_salidas']),
                     'total_costo' => 0,
                     'stock_actual' => 0,
-                    'costo_inicial' => isset($item['costo']) ? floatval($item['costo']) : 0
+                    'costo_inicial' => isset($item['costo']) ? floatval($item['costo']) : 0,
+                    'ultimo_costo_promedio' => isset($item['costo']) ? floatval($item['costo']) : 0
                 ];
             }
 
             $productos[$categoria][$producto]['total_entradas'] += isset($item['cantidad']) ? floatval($item['cantidad']) : 0;
             $productos[$categoria][$producto]['total_costo'] += isset($item['cantidad']) && isset($item['costo']) ? floatval($item['cantidad']) * floatval($item['costo']) : 0;
             $productos[$categoria][$producto]['stock_actual'] = $productos[$categoria][$producto]['total_entradas'] - $productos[$categoria][$producto]['total_salidas'];
+
+            // Mantener el costo promedio actualizado
+            if ($productos[$categoria][$producto]['stock_actual'] != 0) {
+                $productos[$categoria][$producto]['ultimo_costo_promedio'] = $productos[$categoria][$producto]['total_costo'] / $productos[$categoria][$producto]['total_entradas'];
+            }
         }
 
         echo '<div class="container mt-3 animate__animated animate__fadeIn">';
@@ -88,25 +94,16 @@ try {
 
         foreach ($productos as $categoria => $productos_categoria) {
             foreach ($productos_categoria as $producto => $datos) {
-                $total_costo = $datos['total_costo'];
-                $total_cantidad = $datos['total_entradas']; // Se usa solo el total de entradas para calcular el costo promedio
-                $ultimo_costo_promedio = $datos['costo_inicial']; // Inicialmente se usa el costo inicial
                 $existencias = $productos[$categoria][$producto]['stock_actual'];
-                $cantidad_movimiento = floatval($datos['total_entradas']) - floatval($datos['total_salidas']);
-                $costo_movimiento = isset($datos['costo']) ? floatval($datos['costo']) : 0;
-
-                if ($existencias + $cantidad_movimiento != 0) {
-                    $costo_promedio = (($existencias * $ultimo_costo_promedio) + ($cantidad_movimiento * $costo_movimiento)) / ($existencias + $cantidad_movimiento);
-                } else {
-                    $costo_promedio = $ultimo_costo_promedio;
-                }
+                $total_costo = ($existencias == 0) ? 0 : $existencias * $productos[$categoria][$producto]['ultimo_costo_promedio'];
+                $costo_promedio = $productos[$categoria][$producto]['ultimo_costo_promedio'];
 
                 echo '<tr>';
                 echo '<td>' . htmlspecialchars($categoria) . '</td>';
                 echo '<td>' . htmlspecialchars($producto) . '</td>';
                 echo '<td>' . htmlspecialchars($datos['total_entradas']) . '</td>';
                 echo '<td>' . htmlspecialchars($datos['total_salidas']) . '</td>';
-                echo '<td>' . htmlspecialchars($productos[$categoria][$producto]['stock_actual']) . '</td>';
+                echo '<td>' . htmlspecialchars($existencias) . '</td>';
                 echo '<td>$' . number_format($total_costo, 2) . '</td>';
                 echo '<td>$' . number_format($costo_promedio, 2) . '</td>';
                 echo '</tr>';
