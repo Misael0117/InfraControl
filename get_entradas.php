@@ -31,7 +31,7 @@ try {
                     <td>{$row['factura']}</td>
                     <td>{$row['proveedor']}</td>
                     <td>{$row['cantidad']}</td>
-                    <td>$ {$row['costo']}</td>
+                    <td>{$row['costo']}</td>
                     <td>{$row['fecha']}</td>
                     <td>
                         <button class='btn btn-warning btn-sm' onclick='modifyRecord(\"entrada\", {$row['id']})'>Editar</button>

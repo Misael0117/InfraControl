@@ -3,7 +3,7 @@ include 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $action = $_POST['action'];
-    $type = $_POST['type']; // Obtener el tipo (entrada o salida)
+    $type = $_POST['type']; // Obtener el tipo (entrada)
 
     // Si la acción es añadir una nueva entrada
     if ($action == 'add' && $type == 'entrada') {

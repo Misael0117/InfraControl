@@ -1,24 +1,40 @@
 <?php
 session_start();
-include 'config.php'; 
+include 'config.php'; // Conexión a la base de datos
 
 try {
     // Consulta para obtener datos de `entrada_materiales`
-    $queryEntradas = "SELECT id, 'Entrada' as tipo_movimiento, producto, cantidad, costo, fecha FROM entrada_materiales";
-    
+    $queryEntradas = "SELECT 'Entrada' as tipo_movimiento, producto, cantidad, costo, fecha FROM entrada_materiales";
+
     // Consulta para obtener datos de `salida_material`
-    $querySalidas = "SELECT id, 'Salida' as tipo_movimiento, producto, cantidad, costo, fecha FROM salida_material";
+    $querySalidas = "SELECT 'Salida' as tipo_movimiento, producto, cantidad, costo, fecha FROM salida_material";
 
     // Unir ambas consultas
     $query = "$queryEntradas UNION ALL $querySalidas ORDER BY fecha";
 
     $stmt = $conn->query($query);
 
-    if ($stmt->rowCount() > 0) {  
+    if ($stmt->rowCount() > 0) {
+        // Preparar la consulta para insertar en `movimientos_inventario`
+        $insertQuery = "INSERT INTO movimientos_inventario (tipo_movimiento, producto, cantidad, costo, fecha)
+                        VALUES (:tipo_movimiento, :producto, :cantidad, :costo, :fecha)";
+        $insertStmt = $conn->prepare($insertQuery);
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            // Insertar los datos
+            $insertStmt->execute([
+                ':tipo_movimiento' => $row['tipo_movimiento'],
+                ':producto' => $row['producto'],
+                ':cantidad' => $row['cantidad'],
+                ':costo' => $row['costo'],
+                ':fecha' => $row['fecha']
+            ]);
+        }
+
+        // Mostrar la tabla al usuario
         echo "<table class='table table-striped'>
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Tipo de Movimiento</th>
                         <th>Producto</th>
                         <th>Cantidad</th>
@@ -27,9 +43,10 @@ try {
                     </tr>
                 </thead>
                 <tbody>";
+        $stmt->execute(); // Reejecutar la consulta para mostrar datos
+
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             echo "<tr>
-                    <td>{$row['id']}</td>
                     <td>{$row['tipo_movimiento']}</td>
                     <td>{$row['producto']}</td>
                     <td>{$row['cantidad']}</td>

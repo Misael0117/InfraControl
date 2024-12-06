@@ -408,8 +408,6 @@ function deleteEntry(type, id) {
     }
 }
 
-
-
 </script>
 
 </body>
