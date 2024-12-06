@@ -32,6 +32,7 @@ include 'user_info.php';
                 <a href="movimientos_inventario.php" class="option">Movimientos al inventario</a>
                 <a href="reportes.php" class="option">Reportes</a>
                 <a href="configurar_usuarios.php" class="option">Configurar Usuarios</a>
+                <a href="catalogo_productos.php" class="option">Catálogo de Productos y Proveedores</a> <!-- Nuevo botón -->
             <?php } ?>
         </div>
 
