@@ -12,7 +12,7 @@ include 'user_info.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>InfraControl | Consultas</title>
+    <title>InfraControl | Movimientos</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/consultas.css" rel="stylesheet">
     <!-- Incluir jQuery -->
