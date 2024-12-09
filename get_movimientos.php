@@ -15,13 +15,18 @@ try {
     $stmt = $conn->query($query);
 
     if ($stmt->rowCount() > 0) {
-        // Preparar la consulta para insertar en `movimientos_inventario`
+        // Preparar la consulta para insertar en `movimientos_inventario` si no existe
         $insertQuery = "INSERT INTO movimientos_inventario (tipo_movimiento, producto, cantidad, costo, fecha)
-                        VALUES (:tipo_movimiento, :producto, :cantidad, :costo, :fecha)";
+                        SELECT :tipo_movimiento, :producto, :cantidad, :costo, :fecha
+                        WHERE NOT EXISTS (
+                            SELECT 1 FROM movimientos_inventario 
+                            WHERE tipo_movimiento = :tipo_movimiento AND producto = :producto AND cantidad = :cantidad 
+                            AND costo = :costo AND fecha = :fecha
+                        )";
         $insertStmt = $conn->prepare($insertQuery);
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            // Insertar los datos
+            // Insertar los datos si no existen
             $insertStmt->execute([
                 ':tipo_movimiento' => $row['tipo_movimiento'],
                 ':producto' => $row['producto'],
